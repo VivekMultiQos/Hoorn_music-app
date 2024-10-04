@@ -9,6 +9,7 @@ import 'package:music_app/cubit/dashboard/playing_song/playing_song_cubit.dart';
 import 'package:music_app/entities/albums/mdl_album_details.dart';
 import 'package:music_app/entities/albums/mdl_album_details_screen.dart';
 import 'package:music_app/entities/albums/mdl_local_store.dart';
+import 'package:music_app/ui/dashboard/albums/song_list.dart';
 import 'package:music_app/ui/dashboard/song_tail.dart';
 
 class AlbumDetailsScreen extends StatefulWidget {
@@ -23,7 +24,6 @@ class AlbumDetailsScreen extends StatefulWidget {
 class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   String? albumName;
   MdlAlbumDetails? mdlAlbumDetailsData;
-  String? playingSongId;
   bool isPlaying = false;
 
   @override
@@ -33,11 +33,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
       albumName = mdlAlbumDetails.albumName;
       widget.albumDetailsCubit.getAlbums(albumId: mdlAlbumDetails.albumId ?? 0);
     }
-
-    LoginUser.instance.currentPlayingSong.listen((value) {
-      playingSongId = value.id;
-      setState(() {});
-    });
 
     LoginUser.instance.songPlay.listen((value) {
       isPlaying = value;
@@ -91,8 +86,21 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                                   albumDetailsHeader(),
                                   albumPlaySection(
                                       songs: mdlAlbumDetailsData?.data?.songs),
-                                  albumSongList(
-                                      songs: mdlAlbumDetailsData?.data?.songs),
+                                  SongList(
+                                    songs:
+                                        mdlAlbumDetailsData?.data?.songs ?? [],
+                                    onTap: (value) {
+                                      LoginUser.instance.playingSong.value =
+                                          MDlPlayingSongs(
+                                              songs: mdlAlbumDetailsData?.data?.songs ?? [],
+                                              currentPlayingIndex: value);
+                                      LoginUser.instance.currentPlayAlbumId =
+                                          mdlAlbumDetailsData?.data?.id;
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: 70.h,
+                                  ),
                                 ],
                               )
                             : const Center(child: Text("No Data Found")),
@@ -236,34 +244,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
           )
         ],
       ),
-    );
-  }
-
-  Widget albumSongList({List<Songs>? songs}) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.only(bottom: 70.h),
-      itemCount: songs?.length,
-      itemBuilder: (BuildContext context, int index) {
-        return InkWell(
-          onTap: () {
-            LoginUser.instance.playingSong.value =
-                MDlPlayingSongs(songs: songs ?? [], currentPlayingIndex: index);
-            LoginUser.instance.currentPlayAlbumId =
-                mdlAlbumDetailsData?.data?.id;
-          },
-          child: SongTail(
-            imageUrl: mdlAlbumDetailsData?.data?.image?.isNotEmpty ?? false
-                ? songs![index].image?.first.url ?? ''
-                : '',
-            songName: songs?[index].name ?? '',
-            playCount: songs?[index].playCount?.toString() ?? '0',
-            playingSongId: playingSongId ?? '',
-            songId: songs?[index].id ?? '',
-          ),
-        );
-      },
     );
   }
 }

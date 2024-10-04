@@ -14,12 +14,11 @@ class RecommendedSectionCubit extends Cubit<RecommendedSectionState> {
   void getSongs({bool shouldShowLoader = true, required String songId}) async {
     emit(RecommendedLoadingState());
     try {
-      var response =
-          await repository.getSongs(param: MDLGetSongParam(id: songId));
+      var response = await repository.getSongs(param: MDLGetSongParam(id: songId, limit: 20));
       if (response.getException == null) {
         var dataInfo = response.getData;
         if (dataInfo != null) {
-          emit(RecommendedSuccessState());
+            emit(RecommendedSuccessState(dataInfo.data ?? []));
         } else {
           emit(RecommendedErrorState('No albums found.'));
         }

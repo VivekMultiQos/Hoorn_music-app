@@ -87,11 +87,12 @@ AppBar baseAppBar(
             : const SizedBox.shrink(),
         Expanded(
           child: Padding(
-            padding: EdgeInsets.only(left: leading == null ? 20.0 : 0),
+            padding: EdgeInsets.only(left: leading == null ? 15.0 : 0),
             child: Text(
               title ?? '',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              style: titleStyle,
             ),
           ),
         ),
@@ -557,7 +558,7 @@ Future<void> addFavoriteSong(Songs song) async {
   if (LoginUser.instance.favoriteSong.any((songs) => songs.id == song.id)) {
     LoginUser.instance.favoriteSong.removeWhere((s) => s.id == song.id);
   } else {
-    LoginUser.instance.favoriteSong.insert(0,song);
+    LoginUser.instance.favoriteSong.insert(0, song);
   }
   await LoginUser.instance.storeUserDataToLocal(
     MdlLocalStore(

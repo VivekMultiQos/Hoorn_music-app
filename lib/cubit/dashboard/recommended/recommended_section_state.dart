@@ -5,9 +5,13 @@ sealed class RecommendedSectionState {}
 
 final class RecommendedSectionInitial extends RecommendedSectionState {}
 
-final class RecommendedLoadingState extends RecommendedSectionState {}
+class RecommendedLoadingState extends RecommendedSectionState {}
 
-final class RecommendedSuccessState extends RecommendedSectionState {}
+class RecommendedSuccessState extends RecommendedSectionState {
+  final List<Songs> songs;
+
+  RecommendedSuccessState(this.songs);
+}
 
 class RecommendedErrorState extends RecommendedSectionState {
   final String errorMessage;

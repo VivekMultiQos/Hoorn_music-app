@@ -46,6 +46,100 @@ class MdlSongRecommendedResponse {
   }
 }
 
+class MDLLyricsResponse {
+  bool? success;
+  MDLLyricsData? data;
+
+  MDLLyricsResponse({this.success, this.data});
+
+  MDLLyricsResponse.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    data = json['data'] != null ? MDLLyricsData.fromJson(json['data']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['success'] = success;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    return data;
+  }
+}
+
+class MDLSearchSongResponse {
+  bool? success;
+  MDlSearchSongData? data;
+
+  MDLSearchSongResponse({this.success, this.data});
+
+  MDLSearchSongResponse.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    data =
+        json['data'] != null ? MDlSearchSongData.fromJson(json['data']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = success;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    return data;
+  }
+}
+
+class MDlSearchSongData {
+  int? total;
+  int? start;
+  List<Songs>? results;
+
+  MDlSearchSongData({this.total, this.start, this.results});
+
+  MDlSearchSongData.fromJson(Map<String, dynamic> json) {
+    total = json['total'];
+    start = json['start'];
+    if (json['results'] != null) {
+      results = <Songs>[];
+      json['results'].forEach((v) {
+        results!.add(new Songs.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total'] = total;
+    data['start'] = start;
+    if (results != null) {
+      data['results'] = results!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class MDLLyricsData {
+  String? lyrics;
+  String? snippet;
+  String? copyright;
+
+  MDLLyricsData({this.lyrics, this.snippet, this.copyright});
+
+  MDLLyricsData.fromJson(Map<String, dynamic> json) {
+    lyrics = json['lyrics'];
+    snippet = json['snippet'];
+    copyright = json['copyright'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['lyrics'] = lyrics;
+    data['snippet'] = snippet;
+    data['copyright'] = copyright;
+    return data;
+  }
+}
+
 class Data {
   String? id;
   String? name;
@@ -354,7 +448,6 @@ class DownloadUrl {
   }
 }
 
-
 class MDLGetAlbumsParam {
   int? id;
 
@@ -369,11 +462,10 @@ class MDLGetAlbumsParam {
   }
 }
 
-
-class MDLGetSongParam {
+class MDLGetLyricsParam {
   String? id;
 
-  MDLGetSongParam({
+  MDLGetLyricsParam({
     this.id,
   });
 
@@ -381,5 +473,123 @@ class MDLGetSongParam {
     return {
       'id': id,
     };
+  }
+}
+
+class MDLGetSongParam {
+  String? id;
+  int? limit;
+
+  MDLGetSongParam({this.id, this.limit});
+
+  Map<String, dynamic> get toJson {
+    return {
+      'id': id,
+      'limit': limit,
+    };
+  }
+}
+
+class MDLSearchPlayListResponse {
+  bool? success;
+  MdlPlayListData? data;
+
+  MDLSearchPlayListResponse({this.success, this.data});
+
+  MDLSearchPlayListResponse.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    data = json['data'] != null
+        ? new MdlPlayListData.fromJson(json['data'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['success'] = success;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    return data;
+  }
+}
+
+class MdlPlayListData {
+  int? total;
+  int? start;
+  List<MDLPlayListResults>? results;
+
+  MdlPlayListData({this.total, this.start, this.results});
+
+  MdlPlayListData.fromJson(Map<String, dynamic> json) {
+    total = json['total'];
+    start = json['start'];
+    if (json['results'] != null) {
+      results = <MDLPlayListResults>[];
+      json['results'].forEach((v) {
+        results!.add(new MDLPlayListResults.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total'] = total;
+    data['start'] = start;
+    if (results != null) {
+      data['results'] = results!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class MDLPlayListResults {
+  String? id;
+  String? name;
+  String? type;
+  List<MDLImage>? image;
+  String? url;
+  int? songCount;
+  String? language;
+  bool? explicitContent;
+
+  MDLPlayListResults(
+      {this.id,
+      this.name,
+      this.type,
+      this.image,
+      this.url,
+      this.songCount,
+      this.language,
+      this.explicitContent});
+
+  MDLPlayListResults.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    type = json['type'];
+    if (json['image'] != null) {
+      image = <MDLImage>[];
+      json['image'].forEach((v) {
+        image!.add(new MDLImage.fromJson(v));
+      });
+    }
+    url = json['url'];
+    songCount = json['songCount'];
+    language = json['language'];
+    explicitContent = json['explicitContent'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data =  Map<String, dynamic>();
+    data['id'] = id;
+    data['name'] = name;
+    data['type'] = type;
+    if (image != null) {
+      data['image'] = image!.map((v) => v.toJson()).toList();
+    }
+    data['url'] = url;
+    data['songCount'] = songCount;
+    data['language'] = language;
+    data['explicitContent'] = explicitContent;
+    return data;
   }
 }

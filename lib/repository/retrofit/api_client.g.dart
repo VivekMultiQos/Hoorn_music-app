@@ -58,7 +58,10 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<MdlSearchAlbumResponse> searchAlbums(Map<String, dynamic> body) async {
+  Future<MdlSearchAlbumResponse> searchAlbums(
+    Map<String, dynamic> body,
+    CancelToken cancelToken,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(body);
@@ -74,6 +77,7 @@ class _ApiClient implements ApiClient {
           'search/albums',
           queryParameters: queryParameters,
           data: _data,
+          cancelToken: cancelToken,
         )
         .copyWith(
             baseUrl: _combineBaseUrls(
@@ -84,6 +88,82 @@ class _ApiClient implements ApiClient {
     late MdlSearchAlbumResponse _value;
     try {
       _value = MdlSearchAlbumResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<MDLSearchSongResponse> searchSongs(
+    Map<String, dynamic> body,
+    CancelToken cancelToken,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(body);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<MDLSearchSongResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'search/songs',
+          queryParameters: queryParameters,
+          data: _data,
+          cancelToken: cancelToken,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late MDLSearchSongResponse _value;
+    try {
+      _value = MDLSearchSongResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<MDLSearchPlayListResponse> searchPlayList(
+    Map<String, dynamic> body,
+    CancelToken cancelToken,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(body);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<MDLSearchPlayListResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'search/playlists',
+          queryParameters: queryParameters,
+          data: _data,
+          cancelToken: cancelToken,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late MDLSearchPlayListResponse _value;
+    try {
+      _value = MDLSearchPlayListResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -126,9 +206,12 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<MdlSongRecommendedResponse> getSongs(String id) async {
+  Future<MdlSongRecommendedResponse> getSongs(
+    String id,
+    int limit,
+  ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'limit': limit};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<MdlSongRecommendedResponse>(Options(
@@ -138,7 +221,7 @@ class _ApiClient implements ApiClient {
     )
         .compose(
           _dio.options,
-          '/api/songs/${id}/suggestions',
+          'songs/${id}/suggestions',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -151,6 +234,39 @@ class _ApiClient implements ApiClient {
     late MdlSongRecommendedResponse _value;
     try {
       _value = MdlSongRecommendedResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<MDLLyricsResponse> getLyrics(String id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<MDLLyricsResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'songs/${id}/lyrics',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late MDLLyricsResponse _value;
+    try {
+      _value = MDLLyricsResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

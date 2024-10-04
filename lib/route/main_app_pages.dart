@@ -3,9 +3,11 @@ import 'package:music_app/constant/import.dart';
 import 'package:music_app/cubit/dashboard/albums_details/album_details_cubit.dart';
 import 'package:music_app/cubit/dashboard/dashboard_cubit.dart';
 import 'package:music_app/cubit/dashboard/play_screen/play_screen_cubit.dart';
+import 'package:music_app/cubit/dashboard/search/search_cubit.dart';
 import 'package:music_app/ui/dashboard/albums/album_details_screen.dart';
 import 'package:music_app/ui/dashboard/dashboard_screen.dart';
 import 'package:music_app/ui/dashboard/play_screen.dart';
+import 'package:music_app/ui/dashboard/search.dart';
 import 'package:music_app/ui/lrf/login_page.dart';
 
 import '../repository/contract_builder/app_repository_builder.dart';
@@ -42,7 +44,18 @@ class MainAppPages {
       name: AppPages.playScreen,
       transition: Transition.downToUp,
       page: () => PlayScreen(
-        playScreenCubit: PlayScreenCubit(),
+        playScreenCubit: PlayScreenCubit(
+            repository: AppRepositoryBuilder.repository(
+                of: RepositoryProviderType.home)),
+      ),
+    ),
+    GetPage(
+      name: AppPages.search,
+      transition: Transition.rightToLeft,
+      page: () => SearchScreen(
+        searchCubit: SearchCubit(
+            repository: AppRepositoryBuilder.repository(
+                of: RepositoryProviderType.home)),
       ),
     ),
   ];

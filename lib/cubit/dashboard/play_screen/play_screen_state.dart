@@ -7,7 +7,12 @@ final class PlayScreenInitial extends PlayScreenState {}
 
 class PlayScreenLoadingState extends PlayScreenState {}
 
-class PlayScreenSuccessState extends PlayScreenState {}
+class PlayScreenSuccessState extends PlayScreenState {
+  final String lyrics;
+
+  PlayScreenSuccessState(this.lyrics);
+
+}
 
 class PlayScreenErrorState extends PlayScreenState {
   final String errorMessage;

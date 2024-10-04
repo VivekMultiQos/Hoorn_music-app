@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_app/common/login_user.dart';
 import 'package:music_app/common/util.dart';
@@ -26,6 +27,8 @@ class _PlayScreenState extends State<PlayScreen> {
   late Songs currentSong;
   bool showLyrics = false;
 
+  String lyrics = "";
+
   @override
   void initState() {
     if (Get.arguments is MdlPlayScreen) {
@@ -39,6 +42,8 @@ class _PlayScreenState extends State<PlayScreen> {
 
     LoginUser.instance.currentPlayingSong.listen((value) {
       currentSong = value;
+      showLyrics = false;
+      lyrics = '';
       setState(() {});
     });
 
@@ -63,7 +68,9 @@ class _PlayScreenState extends State<PlayScreen> {
         return BlocConsumer<PlayScreenCubit, PlayScreenState>(
           bloc: widget.playScreenCubit,
           listener: (context, state) {
-            // TODO: implement listener
+            if (state is PlayScreenSuccessState) {
+              lyrics = state.lyrics;
+            }
           },
           builder: (context, state) {
             return Scaffold(
@@ -83,6 +90,10 @@ class _PlayScreenState extends State<PlayScreen> {
                         setState(() {
                           showLyrics = !showLyrics;
                         });
+                        if (showLyrics) {
+                          widget.playScreenCubit
+                              .getLyrics(songId: currentSong.id ?? '');
+                        }
                       },
                       child: Icon(
                         Icons.short_text_rounded,
@@ -122,9 +133,33 @@ class _PlayScreenState extends State<PlayScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         showLyrics
-                            ? const Expanded(
+                            ? SizedBox(
+                                height: 500.h,
+                                width: Get.width,
                                 child: Center(
-                                  child: Text("Lyrics not found"),
+                                  child: state is PlayScreenLoadingState
+                                      ? const CircularProgressIndicator()
+                                      : state is PlayScreenErrorState
+                                          ? const Text("Lyrics not found")
+                                          : SingleChildScrollView(
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20.w,
+                                                    vertical: 10.h),
+                                                child: Html(
+                                                  data: lyrics,
+                                                  // Pass your lyrics string with <br> tags
+                                                  style: {
+                                                    "body": Style(
+                                                      fontSize: FontSize(16.0),
+                                                      color: Colors.black,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  },
+                                                ),
+                                              ),
+                                            ),
                                 ),
                               )
                             : Expanded(

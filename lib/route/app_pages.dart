@@ -8,4 +8,5 @@ class AppPages {
   static const dashboard='/dashboard';
   static const albumDetails='/albumDetails';
   static const playScreen='/playScreen';
+  static const search='/search';
 }

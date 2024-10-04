@@ -13,6 +13,12 @@ class DashboardSuccessState extends DashboardState {
   DashboardSuccessState(this.mdlSearchAlbumResponse);
 }
 
+class DashboardPlayListSuccessState extends DashboardState {
+  final MDLSearchPlayListResponse mdlSearchPlayListResponse;
+
+  DashboardPlayListSuccessState(this.mdlSearchPlayListResponse);
+}
+
 class DashboardErrorState extends DashboardState {
   final String errorMessage;
 
