@@ -1,0 +1,27 @@
+// This class will have all the common export file which are using in the App.
+export 'package:get/get.dart' hide FormData;
+export 'package:flutter_screenutil/flutter_screenutil.dart';
+export 'package:music_app/extensions/device.dart';
+export 'package:music_app/constant/enums.dart';
+export 'package:music_app/route/app_pages.dart';
+export 'app_assets.dart';
+export 'font_style.dart';
+export 'language_key.dart';
+export 'key_constant.dart';
+export '../../localization/app_localizations.dart';
+export 'package:music_app/cubit/cubit_public.dart';
+// export 'package:music_app/ui/common/buttons/primary_button.dart';
+// export 'package:music_app/ui/common/text_field/custom_text_field.dart';
+export 'package:music_app/extensions/app_alerts.dart';
+export 'package:music_app/extensions/app_extension.dart';
+export 'package:music_app/extensions/app_loader.dart';
+export 'package:music_app/extensions/datetime_extension.dart';
+export 'package:music_app/extensions/keyboard_extension.dart';
+export 'package:music_app/extensions/media_picker.dart';
+// export 'package:music_app/ui/common/bottom_sheets/bottom_sheets.dart';
+export 'package:music_app/theme/theme_colors.dart';
+// export 'package:music_app/ui/common/widgets/custom_app_bar.dart';
+// export 'package:music_app/ui/common/buttons/custom_back_button.dart';
+export 'package:music_app/constant/app_logs.dart';
+// export 'package:music_app/services/prefetch_service.dart';
+export 'package:music_app/ui/common/alerts/custom_alert.dart';
