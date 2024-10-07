@@ -7,6 +7,7 @@ import 'package:music_app/entities/albums/mdl_album_details.dart';
 import 'package:music_app/entities/albums/mdl_local_store.dart';
 import 'package:music_app/entities/lrf_module/mdl_user.dart';
 import 'package:music_app/floor/dao/user_dao.dart';
+import 'package:music_app/ui/prefere_screen.dart';
 
 import '../floor/app_database.dart';
 import 'package:rxdart/rxdart.dart';
@@ -25,10 +26,13 @@ class LoginUser {
   BehaviorSubject<bool> didUpdateLanguageData = BehaviorSubject<bool>();
   BehaviorSubject<bool> songPlay = BehaviorSubject<bool>();
   BehaviorSubject<bool> updateFavorites = BehaviorSubject<bool>();
-  BehaviorSubject<LoopMode> playInLoop = BehaviorSubject<LoopMode>.seeded(LoopMode.off);
-  BehaviorSubject<MDlPlayingSongs> playingSong = BehaviorSubject<MDlPlayingSongs>();
+  BehaviorSubject<LoopMode> playInLoop =
+      BehaviorSubject<LoopMode>.seeded(LoopMode.off);
+  BehaviorSubject<MDlPlayingSongs> playingSong =
+      BehaviorSubject<MDlPlayingSongs>();
   BehaviorSubject<Songs> currentPlayingSong = BehaviorSubject<Songs>();
   List<Songs> favoriteSong = [];
+  List<Singers> preferSinger = [];
 
   String? currentPlayAlbumId;
   AudioPlayer player = AudioPlayer();
@@ -50,6 +54,10 @@ class LoginUser {
         MdlLocalStore user = users.first;
         favoriteSong = (jsonDecode(user.favoriteSong!) as List)
             .map((songData) => Songs.fromJson(songData))
+            .toList();
+
+        preferSinger = (jsonDecode(user.preferSinger!) as List)
+            .map((songData) => Singers.fromJson(songData))
             .toList();
 
         updateFavorites.value = true;

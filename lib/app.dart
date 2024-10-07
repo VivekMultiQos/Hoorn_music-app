@@ -87,7 +87,7 @@ class _AppState extends State<App> {
   }
 
   String _initMainScreen() {
-    return AppPages.dashboard;
+    return AppPages.prefetchPage;
   }
 
   void _showNoInternetAlert(ConnectivityResult result) {

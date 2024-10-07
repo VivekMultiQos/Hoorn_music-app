@@ -44,6 +44,11 @@ abstract class ApiClient {
   Future<MDLSearchPlayListResponse> searchPlayList(
       @Queries() Map<String, dynamic> body,@CancelRequest() CancelToken cancelToken);
 
+
+  @GET(Apis.searchArtists)
+  Future<MDlSearchArtistResponse> searchArtists(
+      @Queries() Map<String, dynamic> body,@CancelRequest() CancelToken cancelToken);
+
   @GET(Apis.getAlbums)
   Future<MdlAlbumDetails> getAlbum(@Queries() Map<String, dynamic> body);
 
@@ -52,4 +57,10 @@ abstract class ApiClient {
 
   @GET("${Apis.getLyrics}{id}/lyrics")
   Future<MDLLyricsResponse> getLyrics(@Path("id") String id);
+
+  @GET("${Apis.getArtist}{id}")
+  Future<ADLArtistResponse> getArtist(@Path("id") String id);
+
+  @GET(Apis.getPlayList)
+  Future<MDlPlayListResponse> getPlayList(@Queries() Map<String, dynamic> body);
 }

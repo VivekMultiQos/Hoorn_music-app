@@ -49,28 +49,32 @@ class _FavoriteSectionsState extends State<FavoriteSections> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Favorites",
-                  style: TextStyle(fontSize: 24.w, fontWeight: FontWeight.bold),
-                ),
-                InkWell(
-                  onTap: () {
-                    LoginUser.instance.playingSong.value = MDlPlayingSongs(
-                      songs: LoginUser.instance.favoriteSong,
-                      currentPlayingIndex: 0,
-                    );
-                  },
-                  child: Text(
-                    "Play all",
-                    style: AppFontStyle.h3Regular.copyWith(
-                      color: Colors.green,
-                    ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Favorites",
+                    style:
+                        TextStyle(fontSize: 24.w, fontWeight: FontWeight.bold),
                   ),
-                )
-              ],
+                  InkWell(
+                    onTap: () {
+                      LoginUser.instance.playingSong.value = MDlPlayingSongs(
+                        songs: LoginUser.instance.favoriteSong,
+                        currentPlayingIndex: 0,
+                      );
+                    },
+                    child: Text(
+                      "Play all",
+                      style: AppFontStyle.h3Regular.copyWith(
+                        color: Colors.green,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
             SizedBox(
               height: 300.h,

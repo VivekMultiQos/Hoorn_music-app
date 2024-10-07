@@ -20,6 +20,20 @@ class SearchSongSuccessState extends SearchState {
 }
 
 
+class DashboardPlayListSuccessState extends SearchState {
+  final MDLSearchPlayListResponse mdlSearchPlayListResponse;
+
+  DashboardPlayListSuccessState(this.mdlSearchPlayListResponse);
+}
+
+
+class DashboardArtistSuccessState extends SearchState {
+  final MDlSearchArtistResponse mDlSearchArtistResponse;
+
+  DashboardArtistSuccessState(this.mDlSearchArtistResponse);
+}
+
+
 class SearchErrorState extends SearchState {
   final String errorMessage;
 

@@ -4,34 +4,34 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music_app/common/login_user.dart';
 import 'package:music_app/common/util.dart';
 import 'package:music_app/constant/import.dart';
-import 'package:music_app/cubit/dashboard/albums_details/album_details_cubit.dart';
 import 'package:music_app/cubit/dashboard/playing_song/playing_song_cubit.dart';
+import 'package:music_app/cubit/playlist/playlist_details_cubit.dart';
 import 'package:music_app/entities/albums/mdl_album_details.dart';
-import 'package:music_app/entities/albums/mdl_album_details_screen.dart';
-import 'package:music_app/entities/albums/mdl_local_store.dart';
+import 'package:music_app/entities/playList/mdl_play_list_screen.dart';
 import 'package:music_app/ui/dashboard/albums/song_list.dart';
-import 'package:music_app/ui/dashboard/song_tail.dart';
+import 'package:music_app/ui/dashboard/artist_list.dart';
 
-class AlbumDetailsScreen extends StatefulWidget {
-  final AlbumDetailsCubit albumDetailsCubit;
+class PlaylistDetails extends StatefulWidget {
+  final PlaylistDetailsCubit playlistDetailsCubit;
 
-  const AlbumDetailsScreen({super.key, required this.albumDetailsCubit});
+  const PlaylistDetails({super.key, required this.playlistDetailsCubit});
 
   @override
-  State<AlbumDetailsScreen> createState() => _AlbumDetailsScreenState();
+  State<PlaylistDetails> createState() => _PlaylistDetailsState();
 }
 
-class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
-  String? albumName;
-  MdlAlbumDetails? mdlAlbumDetailsData;
+class _PlaylistDetailsState extends State<PlaylistDetails> {
+  String playListName = '';
   bool isPlaying = false;
+  late MDlPlayListResponse mDlPlayListResponse;
 
   @override
   void initState() {
-    if (Get.arguments is MdlAlbumDetailsScreen) {
-      var mdlAlbumDetails = Get.arguments as MdlAlbumDetailsScreen;
-      albumName = mdlAlbumDetails.albumName;
-      widget.albumDetailsCubit.getAlbums(albumId: mdlAlbumDetails.albumId ?? 0);
+    if (Get.arguments is MdlPlayListDetailsScreen) {
+      var mdlPlayListDetails = Get.arguments as MdlPlayListDetailsScreen;
+      playListName = mdlPlayListDetails.playListName ?? '';
+      widget.playlistDetailsCubit
+          .getPlayList(playListId: mdlPlayListDetails.playListId ?? 0);
     }
 
     LoginUser.instance.songPlay.listen((value) {
@@ -42,31 +42,24 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   }
 
   @override
-  void dispose() {
-    hideLoader();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeCubit, ChangeThemeState>(
       bloc: changeThemeCubit,
       builder: (context, themeState) {
-        return BlocConsumer<AlbumDetailsCubit, AlbumDetailsState>(
-          bloc: widget.albumDetailsCubit,
+        return BlocConsumer<PlaylistDetailsCubit, PlaylistDetailsState>(
+          bloc: widget.playlistDetailsCubit,
           listener: (context, state) {
-            if (state is AlbumDetailsSuccessState) {
-              hideLoader();
-              mdlAlbumDetailsData = state.mdlAlbumDetails;
+            if (state is PlaylistDetailsSuccessState) {
+              mDlPlayListResponse = state.mDlPlayListResponse;
             }
           },
           builder: (context, state) {
             return Scaffold(
               appBar: baseAppBar(
-                title: albumName ?? '',
+                title: playListName ?? '',
                 leading: const BackButton(),
               ),
-              body: state is AlbumDetailsLoadingState
+              body: state is PlaylistDetailsLoadingState
                   ? Container(
                       height: Get.height,
                       decoration: BoxDecoration(
@@ -76,38 +69,41 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                         child: CircularProgressIndicator(),
                       ),
                     )
-                  : state is AlbumDetailsSuccessState
+                  : state is PlaylistDetailsSuccessState
                       ? Container(
                           height: Get.height,
                           decoration: BoxDecoration(
                             gradient: screenBackGroundColor(),
                           ),
                           child: SingleChildScrollView(
-                            child: mdlAlbumDetailsData
-                                        ?.data?.songs?.isNotEmpty ??
+                            child: mDlPlayListResponse
+                                        .data?.songs?.isNotEmpty ??
                                     false
                                 ? Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
                                       albumDetailsHeader(),
-                                      albumPlaySection(songs: mdlAlbumDetailsData?.data?.songs),
+                                      albumPlaySection(
+                                          songs:
+                                              mDlPlayListResponse.data?.songs),
                                       SongList(
                                         songs:
-                                            mdlAlbumDetailsData?.data?.songs ??
+                                            mDlPlayListResponse.data?.songs ??
                                                 [],
                                         onTap: (value) {
                                           LoginUser.instance.playingSong.value =
                                               MDlPlayingSongs(
-                                                  songs: mdlAlbumDetailsData
-                                                          ?.data?.songs ??
+                                                  songs: mDlPlayListResponse
+                                                          .data?.songs ??
                                                       [],
                                                   currentPlayingIndex: value);
                                           LoginUser
                                                   .instance.currentPlayAlbumId =
-                                              mdlAlbumDetailsData?.data?.id;
+                                              mDlPlayListResponse.data?.id;
                                         },
                                       ),
+                                      ArtistList(artistList: mDlPlayListResponse.data?.artists ?? [],),
                                       SizedBox(
                                         height: 70.h,
                                       ),
@@ -155,8 +151,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                     ),
                     child: CachedNetworkImage(
                       imageUrl:
-                          mdlAlbumDetailsData?.data?.image?.isNotEmpty ?? false
-                              ? mdlAlbumDetailsData?.data?.image?.last.url ?? ''
+                          mDlPlayListResponse.data?.image?.isNotEmpty ?? false
+                              ? mDlPlayListResponse.data?.image?.last.url ?? ''
                               : '',
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
@@ -177,7 +173,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
           // SizedBox(
           //   height: 5.h,
           // ),
-          Text(mdlAlbumDetailsData?.data?.description ?? '')
+          Text(mDlPlayListResponse.data?.description ?? '')
         ],
       ),
     );
@@ -216,18 +212,18 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                   setState(() {
                     if (LoginUser.instance.player.playing &&
                         LoginUser.instance.currentPlayAlbumId ==
-                            mdlAlbumDetailsData?.data?.id) {
+                            mDlPlayListResponse.data?.id) {
                       LoginUser.instance.player.pause();
                       LoginUser.instance.songPlay.value = false;
                     } else {
                       LoginUser.instance.player.play();
                       LoginUser.instance.songPlay.value = true;
                       if (LoginUser.instance.currentPlayAlbumId !=
-                          mdlAlbumDetailsData?.data?.id) {
+                          mDlPlayListResponse.data?.id) {
                         LoginUser.instance.playingSong.value = MDlPlayingSongs(
                             songs: songs ?? [], currentPlayingIndex: 0);
                         LoginUser.instance.currentPlayAlbumId =
-                            mdlAlbumDetailsData?.data?.id;
+                            mDlPlayListResponse.data?.id;
                       }
                     }
                   });
@@ -244,7 +240,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                         )
                       ]),
                   child: Icon(LoginUser.instance.currentPlayAlbumId ==
-                              mdlAlbumDetailsData?.data?.id &&
+                              mDlPlayListResponse.data?.id &&
                           isPlaying
                       ? Icons.pause
                       : Icons.play_arrow),

@@ -28,9 +28,19 @@ abstract class AppRepositoryContract {
     return ResponseWrapper<MDLSearchPlayListResponse?, String?>()..setData(null, null);
   }
 
+  Future<ResponseWrapper<MDlSearchArtistResponse?, String?>> searchArtists(
+      {required MDLAlbumsParam param,required CancelToken cancelToken}) async {
+    return ResponseWrapper<MDlSearchArtistResponse?, String?>()..setData(null, null);
+  }
+
   Future<ResponseWrapper<MdlAlbumDetails?, String?>> getAlbum(
       {required MDLGetAlbumsParam param}) async {
     return ResponseWrapper<MdlAlbumDetails?, String?>()..setData(null, null);
+  }
+
+  Future<ResponseWrapper<MDlPlayListResponse?, String?>> getPlayList(
+      {required MDLGetAlbumsParam param}) async {
+    return ResponseWrapper<MDlPlayListResponse?, String?>()..setData(null, null);
   }
 
   Future<ResponseWrapper<MdlSongRecommendedResponse?, String?>> getSongs(
@@ -41,5 +51,10 @@ abstract class AppRepositoryContract {
   Future<ResponseWrapper<MDLLyricsResponse?, String?>> getLyrics(
       {required MDLGetLyricsParam param}) async {
     return ResponseWrapper<MDLLyricsResponse?, String?>()..setData(null, null);
+  }
+
+  Future<ResponseWrapper<ADLArtistResponse?, String?>> getArtist(
+      {required MDLGetLyricsParam param}) async {
+    return ResponseWrapper<ADLArtistResponse?, String?>()..setData(null, null);
   }
 }

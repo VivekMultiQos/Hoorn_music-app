@@ -10,6 +10,8 @@ import 'package:music_app/entities/albums/mdl_search_album_response.dart';
 import 'package:music_app/ui/common/common_textfield.dart';
 import 'package:music_app/ui/dashboard/album_list.dart';
 import 'package:music_app/ui/dashboard/albums/song_list.dart';
+import 'package:music_app/ui/dashboard/artist_list.dart';
+import 'package:music_app/ui/dashboard/playlist_list.dart';
 
 class SearchScreen extends StatefulWidget {
   final SearchCubit searchCubit;
@@ -23,6 +25,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
   List<MDLAlbumsListResults> mdlAlbumsListResults = [];
+  List<MDLPlayListResults> mdlPlayListResults = [];
+  List<PlayListArtists> mdlArtistResult = [];
   List<Songs> songList = [];
 
   @override
@@ -36,12 +40,20 @@ class _SearchScreenState extends State<SearchScreen> {
             if (state is SearchSuccessState) {
               mdlAlbumsListResults =
                   state.mdlSearchAlbumResponse.data?.results ?? [];
-            } else if (state is SearchErrorState) {
-              showToastAlert(message: state.errorMessage);
             }
 
             if (state is SearchSongSuccessState) {
               songList = state.mdlSearchAlbumResponse;
+            }
+
+            if (state is DashboardPlayListSuccessState) {
+              mdlPlayListResults =
+                  state.mdlSearchPlayListResponse.data?.results ?? [];
+            }
+
+            if (state is DashboardArtistSuccessState) {
+              mdlArtistResult =
+                  state.mDlSearchArtistResponse.data?.results ?? [];
             }
           },
           builder: (context, state) {
@@ -68,6 +80,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           widget.searchCubit.songList(
                             searchText: _controller.text,
                           );
+
+                          widget.searchCubit
+                              .playListList(searchText: _controller.text);
+                          widget.searchCubit
+                              .searchArtists(searchText: _controller.text);
                         },
                       ),
                     ),
@@ -111,6 +128,19 @@ class _SearchScreenState extends State<SearchScreen> {
                         },
                       ),
                       AlbumList(albumList: mdlAlbumsListResults),
+                      mdlPlayListResults.isNotEmpty
+                          ? PlayListList(
+                              playListList: mdlPlayListResults,
+                            )
+                          : const SizedBox.shrink(),
+                      mdlArtistResult.isNotEmpty
+                          ? ArtistList(
+                              artistList: mdlArtistResult,
+                            )
+                          : const SizedBox.shrink(),
+                      SizedBox(
+                        height: 70.h,
+                      )
                     ],
                   ),
                 ),

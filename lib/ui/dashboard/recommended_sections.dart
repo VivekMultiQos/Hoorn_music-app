@@ -14,7 +14,9 @@ import 'package:music_app/repository/contract_builder/app_repository_contract.da
 import 'package:music_app/ui/dashboard/song_tail.dart';
 
 class RecommendedSections extends StatefulWidget {
-  const RecommendedSections({super.key});
+  final String? songID;
+
+  const RecommendedSections({super.key, this.songID});
 
   @override
   State<RecommendedSections> createState() => _RecommendedSectionsState();
@@ -51,9 +53,11 @@ class _RecommendedSectionsState extends State<RecommendedSections> {
     if (favoriteSongs.isNotEmpty) {
       var randomIndex = Random().nextInt(favoriteSongs.length);
       String randomSongId = favoriteSongs[randomIndex];
-      recommendedSectionCubit.getSongs(songId: randomSongId);
+      if (LoginUser.instance.favoriteSong.isNotEmpty) {
+        recommendedSectionCubit.getSongs(songId: randomSongId);
+      }
     } else {
-      print('No favorite songs available');
+      recommendedSectionCubit.getSongs(songId: widget.songID ?? '');
     }
   }
 
@@ -84,30 +88,33 @@ class _RecommendedSectionsState extends State<RecommendedSections> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Recommended Songs",
-                          style: TextStyle(
-                              fontSize: 24.w, fontWeight: FontWeight.bold),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            LoginUser.instance.playingSong.value =
-                                MDlPlayingSongs(
-                              songs: recommendedSongs,
-                              currentPlayingIndex: 0,
-                            );
-                          },
-                          child: Text(
-                            "Play all",
-                            style: AppFontStyle.h3Regular.copyWith(
-                              color: Colors.green,
-                            ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Recommended Songs",
+                            style: TextStyle(
+                                fontSize: 24.w, fontWeight: FontWeight.bold),
                           ),
-                        )
-                      ],
+                          InkWell(
+                            onTap: () {
+                              LoginUser.instance.playingSong.value =
+                                  MDlPlayingSongs(
+                                songs: recommendedSongs,
+                                currentPlayingIndex: 0,
+                              );
+                            },
+                            child: Text(
+                              "Play all",
+                              style: AppFontStyle.h3Regular.copyWith(
+                                color: Colors.green,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: 300.h,

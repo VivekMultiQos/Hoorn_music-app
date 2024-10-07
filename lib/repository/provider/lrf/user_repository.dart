@@ -47,7 +47,7 @@ class UserRepository extends AppRepositoryContract {
   }) async {
     var responseWrapper = ResponseWrapper<MdlSearchAlbumResponse?, String?>();
     try {
-      var response = await _apiClient.searchAlbums(param.toJson,cancelToken);
+      var response = await _apiClient.searchAlbums(param.toJson, cancelToken);
       var dataInfo = response.data;
       MdlSearchAlbumResponse? albumsDetails;
 
@@ -65,7 +65,6 @@ class UserRepository extends AppRepositoryContract {
     return responseWrapper;
   }
 
-
   @override
   Future<ResponseWrapper<MDLSearchSongResponse?, String?>> searchSongs({
     required MDLAlbumsParam param,
@@ -73,7 +72,7 @@ class UserRepository extends AppRepositoryContract {
   }) async {
     var responseWrapper = ResponseWrapper<MDLSearchSongResponse?, String?>();
     try {
-      var response = await _apiClient.searchSongs(param.toJson,cancelToken);
+      var response = await _apiClient.searchSongs(param.toJson, cancelToken);
       var dataInfo = response.data;
       MDLSearchSongResponse? albumsDetails;
 
@@ -91,15 +90,15 @@ class UserRepository extends AppRepositoryContract {
     return responseWrapper;
   }
 
-
   @override
   Future<ResponseWrapper<MDLSearchPlayListResponse?, String?>> searchPlayList({
     required MDLAlbumsParam param,
     required CancelToken cancelToken,
   }) async {
-    var responseWrapper = ResponseWrapper<MDLSearchPlayListResponse?, String?>();
+    var responseWrapper =
+        ResponseWrapper<MDLSearchPlayListResponse?, String?>();
     try {
-      var response = await _apiClient.searchPlayList(param.toJson,cancelToken);
+      var response = await _apiClient.searchPlayList(param.toJson, cancelToken);
       var dataInfo = response.data;
       MDLSearchPlayListResponse? albumsDetails;
 
@@ -109,6 +108,30 @@ class UserRepository extends AppRepositoryContract {
       }
 
       return responseWrapper..setData(albumsDetails, null);
+    } on DioException catch (e) {
+      responseWrapper.setException(ServerError.withError(error: e));
+    } on Exception {
+      responseWrapper.setException(ServerError.withError(error: null));
+    }
+    return responseWrapper;
+  }
+
+  @override
+  Future<ResponseWrapper<MDlSearchArtistResponse?, String?>> searchArtists({
+    required MDLAlbumsParam param,
+    required CancelToken cancelToken,
+  }) async {
+    var responseWrapper = ResponseWrapper<MDlSearchArtistResponse?, String?>();
+    try {
+      var response = await _apiClient.searchArtists(param.toJson, cancelToken);
+      var dataInfo = response.data;
+      MDlSearchArtistResponse? searchArtist;
+
+      if (dataInfo != null) {
+        searchArtist = MDlSearchArtistResponse.fromJson(response.toJson());
+      }
+
+      return responseWrapper..setData(searchArtist, null);
     } on DioException catch (e) {
       responseWrapper.setException(ServerError.withError(error: e));
     } on Exception {
@@ -133,6 +156,29 @@ class UserRepository extends AppRepositoryContract {
       }
 
       return responseWrapper..setData(albumsDetails, null);
+    } on DioException catch (e) {
+      responseWrapper.setException(ServerError.withError(error: e));
+    } on Exception {
+      responseWrapper.setException(ServerError.withError(error: null));
+    }
+    return responseWrapper;
+  }
+
+  @override
+  Future<ResponseWrapper<MDlPlayListResponse?, String?>> getPlayList({
+    required MDLGetAlbumsParam param,
+  }) async {
+    var responseWrapper = ResponseWrapper<MDlPlayListResponse?, String?>();
+    try {
+      var response = await _apiClient.getPlayList(param.toJson);
+      var dataInfo = response.data;
+      MDlPlayListResponse? playListDetails;
+
+      if (dataInfo != null) {
+        playListDetails = MDlPlayListResponse.fromJson(response.toJson());
+      }
+
+      return responseWrapper..setData(playListDetails, null);
     } on DioException catch (e) {
       responseWrapper.setException(ServerError.withError(error: e));
     } on Exception {
@@ -169,13 +215,11 @@ class UserRepository extends AppRepositoryContract {
     return responseWrapper;
   }
 
-
   @override
   Future<ResponseWrapper<MDLLyricsResponse?, String?>> getLyrics({
     required MDLGetLyricsParam param,
   }) async {
-    var responseWrapper =
-        ResponseWrapper<MDLLyricsResponse?, String?>();
+    var responseWrapper = ResponseWrapper<MDLLyricsResponse?, String?>();
     try {
       String songID = param.id ?? '';
 
@@ -188,6 +232,32 @@ class UserRepository extends AppRepositoryContract {
       }
 
       return responseWrapper..setData(songList, null);
+    } on DioException catch (e) {
+      responseWrapper.setException(ServerError.withError(error: e));
+    } on Exception {
+      responseWrapper.setException(ServerError.withError(error: null));
+    }
+    return responseWrapper;
+  }
+
+
+  @override
+  Future<ResponseWrapper<ADLArtistResponse?, String?>> getArtist({
+    required MDLGetLyricsParam param,
+  }) async {
+    var responseWrapper = ResponseWrapper<ADLArtistResponse?, String?>();
+    try {
+      String songID = param.id ?? '';
+
+      var response = await _apiClient.getArtist(songID);
+      var dataInfo = response.data;
+      ADLArtistResponse? artistData;
+
+      if (dataInfo != null) {
+        artistData = ADLArtistResponse.fromJson(response.toJson());
+      }
+
+      return responseWrapper..setData(artistData, null);
     } on DioException catch (e) {
       responseWrapper.setException(ServerError.withError(error: e));
     } on Exception {

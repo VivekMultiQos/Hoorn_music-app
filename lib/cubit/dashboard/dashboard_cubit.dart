@@ -14,8 +14,10 @@ class DashboardCubit extends Cubit<DashboardState> {
   DashboardCubit({required this.repository}) : super(DashboardInitial());
   CancelToken? _cancelTokenAlbumList;
   CancelToken? _cancelTokenPlayList;
+  CancelToken? _cancelTokenArtist;
 
-  void albumsList({bool shouldShowLoader = true}) async {
+  void albumsList(
+      {bool shouldShowLoader = true, required String searchText}) async {
     emit(DashboardLoadingState());
     try {
       if (_cancelTokenAlbumList != null) {
@@ -25,7 +27,7 @@ class DashboardCubit extends Cubit<DashboardState> {
       _cancelTokenAlbumList = CancelToken();
 
       var response = await repository.searchAlbum(
-        param: MDLAlbumsParam(query: "Evolve"),
+        param: MDLAlbumsParam(query: searchText),
         cancelToken: _cancelTokenAlbumList ?? CancelToken(),
       );
 
@@ -44,7 +46,8 @@ class DashboardCubit extends Cubit<DashboardState> {
     }
   }
 
-  void playListList({bool shouldShowLoader = true}) async {
+  void playListList(
+      {bool shouldShowLoader = true, required String searchText}) async {
     emit(DashboardLoadingState());
     try {
       if (_cancelTokenPlayList != null) {
@@ -54,7 +57,7 @@ class DashboardCubit extends Cubit<DashboardState> {
       _cancelTokenPlayList = CancelToken();
 
       var response = await repository.searchPlayList(
-        param: MDLAlbumsParam(query: "Indie"),
+        param: MDLAlbumsParam(query: searchText),
         cancelToken: _cancelTokenPlayList ?? CancelToken(),
       );
 
@@ -62,6 +65,36 @@ class DashboardCubit extends Cubit<DashboardState> {
         var dataInfo = response.getData;
         if (dataInfo != null) {
           emit(DashboardPlayListSuccessState(dataInfo));
+        } else {
+          emit(DashboardErrorState('No albums found.'));
+        }
+      } else {
+        emit(DashboardErrorState('An error occurred'));
+      }
+    } on Exception catch (e) {
+      emit(DashboardErrorState(e.toString()));
+    }
+  }
+
+  void searchArtists(
+      {bool shouldShowLoader = true, required String searchText}) async {
+    emit(DashboardLoadingState());
+    try {
+      if (_cancelTokenArtist != null) {
+        _cancelTokenArtist!.cancel('**Friends list cancelled**');
+        _cancelTokenArtist = null;
+      }
+      _cancelTokenArtist = CancelToken();
+
+      var response = await repository.searchArtists(
+        param: MDLAlbumsParam(query: searchText),
+        cancelToken: _cancelTokenArtist ?? CancelToken(),
+      );
+
+      if (response.getException == null) {
+        var dataInfo = response.getData;
+        if (dataInfo != null) {
+          emit(DashboardArtistSuccessState(dataInfo));
         } else {
           emit(DashboardErrorState('No albums found.'));
         }

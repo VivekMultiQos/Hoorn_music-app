@@ -19,6 +19,13 @@ class DashboardPlayListSuccessState extends DashboardState {
   DashboardPlayListSuccessState(this.mdlSearchPlayListResponse);
 }
 
+
+class DashboardArtistSuccessState extends DashboardState {
+  final MDlSearchArtistResponse mDlSearchArtistResponse;
+
+  DashboardArtistSuccessState(this.mDlSearchArtistResponse);
+}
+
 class DashboardErrorState extends DashboardState {
   final String errorMessage;
 

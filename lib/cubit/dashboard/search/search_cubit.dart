@@ -14,6 +14,8 @@ class SearchCubit extends Cubit<SearchState> {
 
   CancelToken? _cancelTokenAlbum;
   CancelToken? _cancelTokenSong;
+  CancelToken? _cancelTokenPlayList;
+  CancelToken? _cancelTokenArtist;
 
   void albumsList(
       {bool shouldShowLoader = true, required String searchText}) async {
@@ -64,6 +66,66 @@ class SearchCubit extends Cubit<SearchState> {
         var dataInfo = response.getData;
         if (dataInfo != null) {
           emit(SearchSongSuccessState(dataInfo.data?.results ?? []));
+        } else {
+          emit(SearchErrorState('No albums found.'));
+        }
+      } else {
+        emit(SearchErrorState('An error occurred'));
+      }
+    } on Exception catch (e) {
+      emit(SearchErrorState(e.toString()));
+    }
+  }
+
+  void playListList(
+      {bool shouldShowLoader = true, required String searchText}) async {
+    emit(SearchLoadingState());
+    try {
+      if (_cancelTokenPlayList != null) {
+        _cancelTokenPlayList!.cancel('**Friends list cancelled**');
+        _cancelTokenPlayList = null;
+      }
+      _cancelTokenPlayList = CancelToken();
+
+      var response = await repository.searchPlayList(
+        param: MDLAlbumsParam(query: searchText),
+        cancelToken: _cancelTokenPlayList ?? CancelToken(),
+      );
+
+      if (response.getException == null) {
+        var dataInfo = response.getData;
+        if (dataInfo != null) {
+          emit(DashboardPlayListSuccessState(dataInfo));
+        } else {
+          emit(SearchErrorState('No albums found.'));
+        }
+      } else {
+        emit(SearchErrorState('An error occurred'));
+      }
+    } on Exception catch (e) {
+      emit(SearchErrorState(e.toString()));
+    }
+  }
+
+  void searchArtists(
+      {bool shouldShowLoader = true, required String searchText}) async {
+    emit(SearchLoadingState());
+    try {
+      if (_cancelTokenArtist != null) {
+        _cancelTokenArtist!.cancel('**Friends list cancelled**');
+        _cancelTokenArtist = null;
+      }
+      _cancelTokenArtist = CancelToken();
+
+      var response = await repository.searchArtists(
+        param: MDLAlbumsParam(query: searchText),
+        cancelToken: _cancelTokenArtist ?? CancelToken(),
+      );
+
+      if (response.getException == null) {
+        var dataInfo = response.getData;
+        if (dataInfo != null) {
+          emit(DashboardArtistSuccessState(dataInfo));
         } else {
           emit(SearchErrorState('No albums found.'));
         }

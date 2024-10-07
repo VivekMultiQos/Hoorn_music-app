@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:music_app/constant/import.dart';
 import 'package:music_app/entities/albums/mdl_album_details.dart';
 import 'package:music_app/entities/albums/mdl_album_details_screen.dart';
+import 'package:music_app/entities/playList/mdl_play_list_screen.dart';
 
 import '../../entities/albums/mdl_search_album_response.dart';
 
@@ -25,7 +26,7 @@ class _PlayListListState extends State<PlayListList> {
             ? Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 child: Text(
-                  "Albums",
+                  "Playlists",
                   style: AppFontStyle.h2Bold,
                 ),
               )
@@ -41,12 +42,12 @@ class _PlayListListState extends State<PlayListList> {
                 child: InkWell(
                   onTap: () {
                     Get.toNamed(
-                      AppPages.albumDetails,
-                      arguments: MdlAlbumDetailsScreen(
-                          albumId: int.tryParse(
+                      AppPages.playListDetails,
+                      arguments: MdlPlayListDetailsScreen(
+                          playListId: int.tryParse(
                             widget.playListList[index].id ?? '',
                           ),
-                          albumName: widget.playListList[index].name),
+                          playListName: widget.playListList[index].name),
                     );
                   },
                   child: Column(
