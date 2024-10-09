@@ -30,7 +30,7 @@ class _AlbumListState extends State<AlbumList> {
               )
             : const SizedBox.shrink(),
         SizedBox(
-          height: 200.h,
+          height: 230.w,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: widget.albumList.length,

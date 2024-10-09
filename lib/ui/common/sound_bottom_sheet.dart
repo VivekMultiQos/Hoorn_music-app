@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:equalizer_flutter/equalizer_flutter.dart';
 import 'package:flutter/material.dart';
@@ -124,9 +126,10 @@ class _SoundBottomSheetState extends State<SoundBottomSheet> {
                 ),
               ),
             ),
-            Expanded(
-              child: equalizer(),
-            ),
+            if (Platform.isAndroid)
+              Expanded(
+                child: equalizer(),
+              ),
           ],
         ),
       ),
@@ -163,7 +166,7 @@ class _SoundBottomSheetState extends State<SoundBottomSheet> {
                 future: EqualizerFlutter.getBandLevelRange(),
                 builder: (context, snapshot) {
                   return snapshot.connectionState == ConnectionState.done
-                      ? CustomEQ(enableCustomEQ, snapshot.data!)
+                      ? CustomEQ(enableCustomEQ, snapshot.data ?? [])
                       : const SizedBox.shrink();
                 },
               )

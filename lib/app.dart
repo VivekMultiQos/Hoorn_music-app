@@ -9,6 +9,7 @@ import 'package:music_app/cubit/language_module/language_state.dart';
 import 'package:music_app/localization/app_localizations_setup.dart';
 import 'package:music_app/ui/common/no_internet_screen.dart';
 import 'package:music_app/ui/dashboard/playing_song_widget.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'common/util.dart';
 
@@ -21,6 +22,12 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   bool _hasVisibleNoInternet = false;
+
+  @override
+  void initState() {
+    requestPermission();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +95,15 @@ class _AppState extends State<App> {
 
   String _initMainScreen() {
     return AppPages.prefetchPage;
+  }
+
+  Future<void> requestPermission() async {
+    final status = await Permission.notification.request();
+    if (status.isGranted) {
+      print("Notification permission granted");
+    } else {
+      print("Notification permission denied");
+    }
   }
 
   void _showNoInternetAlert(ConnectivityResult result) {

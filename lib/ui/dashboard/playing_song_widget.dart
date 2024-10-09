@@ -1,13 +1,18 @@
+import 'dart:io';
+
+import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:music_app/common/login_user.dart';
 import 'package:music_app/common/util.dart';
 import 'package:music_app/constant/import.dart';
 import 'package:music_app/cubit/dashboard/playing_song/playing_song_cubit.dart';
 import 'package:music_app/entities/albums/mdl_album_details.dart';
 import 'package:music_app/entities/dashboard/mdl_play_screen.dart';
+import 'package:music_app/ui/common/audio_player_handler.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
 class PlayingSongWidget extends StatefulWidget {
@@ -24,14 +29,32 @@ class _PlayingSongWidgetState extends State<PlayingSongWidget> {
   late List<Songs> _allSong;
   late int _currentPlay;
   bool hideWidget = false;
+  late AudioHandler _audioHandler;
 
   @override
   void initState() {
+    LoginUser.instance.playPrevious.listen((value) {
+      if (_currentSong.id != _allSong.first.id) {
+        widget.playingSongCubit.updateSong(song: _allSong[_currentPlay - 1]);
+        _currentPlay--;
+      } else {
+        widget.playingSongCubit.updateSong(song: _allSong[_currentPlay]);
+      }
+    });
+
+    LoginUser.instance.playNext.listen((value) {
+      if (_currentSong.id != _allSong.last.id) {
+        widget.playingSongCubit.updateSong(song: _allSong[_currentPlay + 1]);
+        _currentPlay++;
+      } else {
+        widget.playingSongCubit.updateSong(song: _allSong[_currentPlay]);
+      }
+    });
+
     LoginUser.instance.playingSong.listen((value) {
       _allSong = value.songs;
       _currentPlay = value.currentPlayingIndex;
-      widget.playingSongCubit
-          .updateSong(song: value.songs[value.currentPlayingIndex]);
+      widget.playingSongCubit.updateSong(song: value.songs[value.currentPlayingIndex]);
     });
 
     LoginUser.instance.playInLoop.listen((value) {
@@ -42,6 +65,18 @@ class _PlayingSongWidgetState extends State<PlayingSongWidget> {
       }
     });
     super.initState();
+  }
+
+  Future<void> playBackground() async {
+      _audioHandler = await AudioService.init(
+        builder: () => AudioPlayerHandler(),
+        config: const AudioServiceConfig(
+          androidNotificationChannelId: 'com.example.music_app',
+          androidNotificationChannelName: 'Audio playback',
+          androidNotificationOngoing: true,
+          androidStopForegroundOnPause: true,
+        ),
+      );
   }
 
   Future<void> _init() async {
@@ -74,6 +109,7 @@ class _PlayingSongWidgetState extends State<PlayingSongWidget> {
       setState(() {
         _currentPlay++;
         _currentSong = _allSong[_currentPlay];
+        LoginUser.instance.currentSong = _allSong[_currentPlay];
       });
       widget.playingSongCubit.updateUI(song: _currentSong);
       LoginUser.instance.player.setAudioSource(
@@ -89,6 +125,7 @@ class _PlayingSongWidgetState extends State<PlayingSongWidget> {
 
   @override
   void dispose() {
+    _audioHandler.stop();
     LoginUser.instance.player.dispose();
     hideLoader();
     super.dispose();
@@ -111,13 +148,15 @@ class _PlayingSongWidgetState extends State<PlayingSongWidget> {
             listener: (context, state) {
               if (state is PlayingSongSuccessState) {
                 _currentSong = state.songs;
+                LoginUser.instance.currentSong = state.songs;
                 _init();
+                playBackground();
                 LoginUser.instance.player.play();
                 LoginUser.instance.songPlay.value = true;
               }
             },
             builder: (context, state) {
-              if (state is PlayingSongSuccessState) {
+              if (state is PlayingSongSuccessState || LoginUser.instance.player.playing) {
                 return StreamBuilder<bool>(
                   stream: _isPlayingStream,
                   builder: (context, snapshot) {

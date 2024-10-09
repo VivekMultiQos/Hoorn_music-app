@@ -115,7 +115,8 @@ class _ArtistDetailsScreenState extends State<ArtistDetailsScreen> {
                                   fit: BoxFit.cover,
                                 ),
                           Positioned(
-                            bottom: 0,
+                            bottom: 10,
+                            left: 10,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,9 +151,20 @@ class _ArtistDetailsScreenState extends State<ArtistDetailsScreen> {
                                     ),
                                   ],
                                 ),
-                                mdlArtistData.bio?.isNotEmpty ?? false
-                                    ? Text(mdlArtistData.bio?.first.text ?? '')
-                                    : const SizedBox.shrink(),
+                                // mdlArtistData.bio?.isNotEmpty ?? false
+                                //     ? Row(
+                                //         children: [
+                                //           Text(
+                                //             mdlArtistData.bio?.first.text ??
+                                //                 '',
+                                //             style: AppFontStyle.h3Regular
+                                //                 .copyWith(
+                                //               color: Colors.white,
+                                //             ),
+                                //           ),
+                                //         ],
+                                //       )
+                                //     : const SizedBox.shrink(),
                               ],
                             ),
                           )
@@ -209,12 +221,18 @@ class _ArtistDetailsScreenState extends State<ArtistDetailsScreen> {
                         singles: true,
                         songs: mdlArtistData.singles ?? [],
                         onTap: (value) {
-                          LoginUser.instance.playingSong.value =
-                              MDlPlayingSongs(
-                                  songs: mdlArtistData.singles ?? [],
-                                  currentPlayingIndex: value);
-                          LoginUser.instance.currentPlayAlbumId =
-                              mdlArtistData.id;
+                          if (mdlArtistData
+                                  .singles?[value].downloadUrl?.isNotEmpty ??
+                              false) {
+                            LoginUser.instance.playingSong.value =
+                                MDlPlayingSongs(
+                                    songs: mdlArtistData.singles ?? [],
+                                    currentPlayingIndex: value);
+                            LoginUser.instance.currentPlayAlbumId =
+                                mdlArtistData.id;
+                          } else {
+                            showToastAlert(message: "song not available");
+                          }
                         },
                       ),
                       AlbumList(albumList: mdlArtistData.topAlbums ?? []),
@@ -247,17 +265,21 @@ class _ArtistDetailsScreenState extends State<ArtistDetailsScreen> {
                   var isAlreadyInList = LoginUser.instance.preferSinger
                       .any((singer) => singer.name == mdlArtistData.name);
 
-                  if (!isAlreadyInList) {
+                  if (isAlreadyInList) {
+                    LoginUser.instance.preferSinger.removeWhere(
+                        (singer) => singer.name == mdlArtistData.name);
+                  } else {
                     LoginUser.instance.preferSinger.add(
                         Singers(name: mdlArtistData.name ?? '', image: ""));
-                    await LoginUser.instance.storeUserDataToLocal(
-                      MdlLocalStore(
-                        favoriteSong: jsonEncode(LoginUser.instance.preferSinger
-                            .map((singer) => singer.toJson())
-                            .toList()),
-                      ),
-                    );
                   }
+                  await LoginUser.instance.storeUserDataToLocal(
+                    MdlLocalStore(
+                      favoriteSong: jsonEncode(LoginUser.instance.preferSinger
+                          .map((singer) => singer.toJson())
+                          .toList()),
+                    ),
+                  );
+
                   setState(() {});
                 },
                 child: Icon(

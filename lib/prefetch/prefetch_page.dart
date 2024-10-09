@@ -32,14 +32,15 @@ class _PrefetchPageState extends State<PrefetchPage> {
   Widget build(BuildContext context) {
     return BlocListener(
       bloc: widget.prefetchCubit,
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is PrefetchLoadingState) {
         } else if (state is PrefetchDropDownErrorState) {
         } else if (state is PrefetchDropDownSuccessState) {
+          await LoginUser.instance.retrieveLoggedInUserDetail();
           if (LoginUser.instance.preferSinger.isNotEmpty) {
-            Get.toNamed(AppPages.dashboard);
+            Get.offAllNamed(AppPages.dashboard);
           } else {
-            Get.toNamed(AppPages.preferScreen);
+            Get.offAllNamed(AppPages.welcomeScreen);
           }
         }
       },

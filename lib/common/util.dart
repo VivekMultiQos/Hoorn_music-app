@@ -323,7 +323,7 @@ void showLoader(
             indicatorType: Indicator.ballSpinFadeLoader,
 
             /// Required, The loading type of the widget
-            colors: [Color(0xffFF5C00)],
+            colors: [Color(0xff000000)],
 
             /// Optional, The color collections
             strokeWidth: 2,
@@ -564,6 +564,10 @@ Future<void> addFavoriteSong(Songs song) async {
     MdlLocalStore(
       favoriteSong: jsonEncode(LoginUser.instance.favoriteSong
           .map((song) => song.toJson())
+          .toList()),
+      userId: 1,
+      preferSinger: jsonEncode(LoginUser.instance.preferSinger
+          .map((singer) => singer.toJson())
           .toList()),
     ),
   );

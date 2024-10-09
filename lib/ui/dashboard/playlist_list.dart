@@ -32,7 +32,7 @@ class _PlayListListState extends State<PlayListList> {
               )
             : const SizedBox.shrink(),
         SizedBox(
-          height: 200.h,
+          height: 230.w,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: widget.playListList.length,

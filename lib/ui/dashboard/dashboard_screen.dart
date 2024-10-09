@@ -14,6 +14,7 @@ import 'package:music_app/ui/dashboard/artist_list.dart';
 import 'package:music_app/ui/dashboard/favorite_sections.dart';
 import 'package:music_app/ui/dashboard/playlist_list.dart';
 import 'package:music_app/ui/dashboard/recommended_sections.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class DashboardScreen extends StatefulWidget {
   final DashboardCubit dashboardCubit;
@@ -25,6 +26,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
   List<MDLAlbumsListResults> mdlAlbumsListResults = [];
   List<MDLPlayListResults> mdlPlayListResults = [];
   List<PlayListArtists> mdlArtistResult = [];
@@ -59,6 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return BlocConsumer<DashboardCubit, DashboardState>(
           bloc: widget.dashboardCubit,
           listener: (context, state) {
+            _refreshController.refreshCompleted();
             if (state is DashboardLoadingState) {
               showLoader(context);
             } else if (state is DashboardSuccessState) {
@@ -78,68 +82,86 @@ class _DashboardScreenState extends State<DashboardScreen> {
             }
           },
           builder: (context, state) {
-            return Scaffold(
-              appBar: baseAppBar(
-                title: "Dashboard",
-                titleStyle: AppFontStyle.h1Bold,
-                widgets: [
-                  InkWell(
-                    onTap: () {
-                      Get.toNamed(AppPages.search);
-                    },
-                    child: Icon(
-                      Icons.search,
-                      color: Colors.black,
-                      size: 30.w,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 15.w,
-                  )
-                ],
+            return Container(
+              decoration: BoxDecoration(
+                gradient: screenBackGroundColor(),
               ),
-              body: SingleChildScrollView(
-                child: Container(
-                  constraints: BoxConstraints(
-                    minHeight: Get.height,
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: baseAppBar(
+                  title: "Dashboard",
+                  titleStyle: AppFontStyle.h1Bold,
+                  widgets: [
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed(AppPages.search);
+                      },
+                      child: Icon(
+                        Icons.search,
+                        color: Colors.black,
+                        size: 30.w,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15.w,
+                    )
+                  ],
+                ),
+                body: SmartRefresher(
+                  controller: _refreshController,
+                  physics: const BouncingScrollPhysics(),
+                  enablePullDown: true,
+                  enablePullUp: false,
+                  onRefresh: _onRefresh,
+                  header: WaterDropHeader(
+                    complete: Container(),
+                    waterDropColor: Colors.black,
                   ),
-                  decoration: BoxDecoration(
-                    gradient: screenBackGroundColor(),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      LoginUser.instance.favoriteSong.isNotEmpty
-                          ? FavoriteSections(
-                              themeState: themeState,
-                              favoritesSectionsCubit: FavoritesSectionsCubit(),
-                            )
-                          : const SizedBox.shrink(),
-                      const RecommendedSections(songID: "yDeAS8Eh"),
-                      mdlAlbumsListResults.isNotEmpty
-                          ? AlbumList(albumList: mdlAlbumsListResults)
-                          : SizedBox(
-                              height: 200.h,
-                              child: const Center(
-                                child: SingleChildScrollView(),
-                              ),
-                            ),
-                      mdlPlayListResults.isNotEmpty
-                          ? PlayListList(
-                              playListList: mdlPlayListResults,
-                            )
-                          : const SizedBox.shrink(),
-                      mdlArtistResult.isNotEmpty
-                          ? ArtistList(
-                              artistList: mdlArtistResult,
-                            )
-                          : const SizedBox.shrink(),
-                      SizedBox(
-                        height: 70.h,
-                      )
-                    ],
+                  child: SingleChildScrollView(
+                    child: Container(
+                      constraints: BoxConstraints(
+                        minHeight: Get.height,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: screenBackGroundColor(),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          LoginUser.instance.favoriteSong.isNotEmpty
+                              ? FavoriteSections(
+                                  themeState: themeState,
+                                  favoritesSectionsCubit:
+                                      FavoritesSectionsCubit(),
+                                )
+                              : const SizedBox.shrink(),
+                          const RecommendedSections(songID: "yDeAS8Eh"),
+                          mdlAlbumsListResults.isNotEmpty
+                              ? AlbumList(albumList: mdlAlbumsListResults)
+                              : SizedBox(
+                                  height: 200.h,
+                                  child: const Center(
+                                    child: SingleChildScrollView(),
+                                  ),
+                                ),
+                          mdlPlayListResults.isNotEmpty
+                              ? PlayListList(
+                                  playListList: mdlPlayListResults,
+                                )
+                              : const SizedBox.shrink(),
+                          mdlArtistResult.isNotEmpty
+                              ? ArtistList(
+                                  artistList: mdlArtistResult,
+                                )
+                              : const SizedBox.shrink(),
+                          SizedBox(
+                            height: 70.h,
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -148,5 +170,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         );
       },
     );
+  }
+
+  void _onRefresh() async {
+    if (LoginUser.instance.preferSinger.isNotEmpty) {
+      widget.dashboardCubit.albumsList(searchText: getRandomSinger());
+      widget.dashboardCubit.playListList(searchText: getRandomSinger());
+      widget.dashboardCubit.searchArtists(searchText: getRandomSinger());
+    }
+    LoginUser.instance.updateRecommended.value = true;
   }
 }

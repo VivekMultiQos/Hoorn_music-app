@@ -13,4 +13,5 @@ class AssetImages {
   static const String rihanna = '$_imagePath/rihanna.jpeg';
   static const String selenaGomez = '$_imagePath/selena_gomez.jpg';
   static const String taylorSwift = '$_imagePath/taylor_swift.png';
+  static const String welcomeScreen = '$_imagePath/welcome_screen.png';
 }

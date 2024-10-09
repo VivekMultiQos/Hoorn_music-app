@@ -53,12 +53,12 @@ class _CustomEQState extends State<CustomEQ> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: snapshot.data!
-                        .asMap()
+                    children: snapshot.data
+                        ?.asMap()
                         .entries
                         .map(
                             (entry) => _buildSliderBand(entry.key, entry.value))
-                        .toList(),
+                        .toList() ?? [],
                   ),
                 ],
               )
@@ -90,7 +90,7 @@ class _CustomEQState extends State<CustomEQ> {
                       inactiveColor: Colors.grey,
                       value: value,
                       onChanged: (newValue) {
-                        bandValues[bandId]!.value = newValue;
+                        bandValues[bandId]?.value = newValue;
                         EqualizerFlutter.setBandLevel(bandId, newValue.toInt());
                       },
                     ),
@@ -114,7 +114,7 @@ class _CustomEQState extends State<CustomEQ> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final presets = snapshot.data;
-          if (presets!.isEmpty) return const Text('No presets available!');
+          if (presets?.isEmpty ??false) return const Text('No presets available!');
           return DropdownButtonFormField<String>(
             decoration: InputDecoration(
               labelText: 'Available Presets',
@@ -136,7 +136,7 @@ class _CustomEQState extends State<CustomEQ> {
                     });
                   }
                 : null,
-            items: presets.map((String value) {
+            items: presets?.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(
@@ -146,13 +146,13 @@ class _CustomEQState extends State<CustomEQ> {
               );
             }).toList(),
             selectedItemBuilder: (BuildContext context) {
-              return presets.map((String value) {
+              return presets?.map((String value) {
                 return Text(
                   value,
                   style: AppFontStyle.h3Regular.copyWith(
                       color: Colors.white), // Selected item text color
                 );
-              }).toList();
+              }).toList() ?? [];
             },
           );
         } else if (snapshot.hasError) {

@@ -41,6 +41,10 @@ class _RecommendedSectionsState extends State<RecommendedSections> {
       playingSongId = value.id;
       setState(() {});
     });
+
+    LoginUser.instance.updateRecommended.listen((value) {
+      fetchRandomSongId();
+    });
   }
 
   void fetchRandomSongId() {
@@ -117,7 +121,7 @@ class _RecommendedSectionsState extends State<RecommendedSections> {
                       ),
                     ),
                     SizedBox(
-                      height: 300.h,
+                      height: 320.w,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: songSections.length,
@@ -149,7 +153,7 @@ class _RecommendedSectionsState extends State<RecommendedSections> {
                 );
               } else {
                 return SizedBox(
-                  height: 100.h,
+                  height: 100.w,
                   child: const Center(
                     child: CircularProgressIndicator(),
                   ),

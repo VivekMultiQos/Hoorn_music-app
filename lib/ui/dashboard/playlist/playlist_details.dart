@@ -103,7 +103,11 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
                                               mDlPlayListResponse.data?.id;
                                         },
                                       ),
-                                      ArtistList(artistList: mDlPlayListResponse.data?.artists ?? [],),
+                                      ArtistList(
+                                        artistList:
+                                            mDlPlayListResponse.data?.artists ??
+                                                [],
+                                      ),
                                       SizedBox(
                                         height: 70.h,
                                       ),
@@ -183,70 +187,46 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Row(
-            children: [
-              InkWell(
-                onTap: () {},
-                child: const Icon(Icons.favorite_border),
-              ),
-              SizedBox(
-                width: 15.w,
-              ),
-              const Icon(Icons.download_for_offline_outlined),
-              SizedBox(
-                width: 15.w,
-              ),
-              const Icon(Icons.more_vert),
-            ],
-          ),
-          Row(
-            children: [
-              const Icon(Icons.shuffle),
-              SizedBox(
-                width: 15.w,
-              ),
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    if (LoginUser.instance.player.playing &&
-                        LoginUser.instance.currentPlayAlbumId ==
-                            mDlPlayListResponse.data?.id) {
-                      LoginUser.instance.player.pause();
-                      LoginUser.instance.songPlay.value = false;
-                    } else {
-                      LoginUser.instance.player.play();
-                      LoginUser.instance.songPlay.value = true;
-                      if (LoginUser.instance.currentPlayAlbumId !=
-                          mDlPlayListResponse.data?.id) {
-                        LoginUser.instance.playingSong.value = MDlPlayingSongs(
-                            songs: songs ?? [], currentPlayingIndex: 0);
-                        LoginUser.instance.currentPlayAlbumId =
-                            mDlPlayListResponse.data?.id;
-                      }
-                    }
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.all(10.w),
-                  decoration: const BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black45,
-                          blurRadius: 10,
-                        )
-                      ]),
-                  child: Icon(LoginUser.instance.currentPlayAlbumId ==
-                              mDlPlayListResponse.data?.id &&
-                          isPlaying
-                      ? Icons.pause
-                      : Icons.play_arrow),
-                ),
-              ),
-            ],
+          InkWell(
+            onTap: () {
+              setState(() {
+                if (LoginUser.instance.player.playing &&
+                    LoginUser.instance.currentPlayAlbumId ==
+                        mDlPlayListResponse.data?.id) {
+                  LoginUser.instance.player.pause();
+                  LoginUser.instance.songPlay.value = false;
+                } else {
+                  LoginUser.instance.player.play();
+                  LoginUser.instance.songPlay.value = true;
+                  if (LoginUser.instance.currentPlayAlbumId !=
+                      mDlPlayListResponse.data?.id) {
+                    LoginUser.instance.playingSong.value = MDlPlayingSongs(
+                        songs: songs ?? [], currentPlayingIndex: 0);
+                    LoginUser.instance.currentPlayAlbumId =
+                        mDlPlayListResponse.data?.id;
+                  }
+                }
+              });
+            },
+            child: Container(
+              padding: EdgeInsets.all(10.w),
+              decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black45,
+                      blurRadius: 10,
+                    )
+                  ]),
+              child: Icon(LoginUser.instance.currentPlayAlbumId ==
+                          mDlPlayListResponse.data?.id &&
+                      isPlaying
+                  ? Icons.pause
+                  : Icons.play_arrow),
+            ),
           )
         ],
       ),

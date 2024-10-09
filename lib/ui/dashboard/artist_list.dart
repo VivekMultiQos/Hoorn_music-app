@@ -34,7 +34,7 @@ class _ArtistListState extends State<ArtistList> {
               )
             : const SizedBox.shrink(),
         SizedBox(
-          height: 200.h,
+          height: 220.w,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: widget.artistList.length,
@@ -43,6 +43,7 @@ class _ArtistListState extends State<ArtistList> {
                 padding: const EdgeInsets.all(8.0),
                 child: InkWell(
                   onTap: () {
+                    Get.back();
                     Get.toNamed(
                       AppPages.artistDetails,
                       arguments: MdlArtistDetailsScreen(

@@ -96,7 +96,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `MdlLocalStore` (`userId` INTEGER, `favoriteSong` TEXT, PRIMARY KEY (`userId`))');
+            'CREATE TABLE IF NOT EXISTS `MdlLocalStore` (`userId` INTEGER, `preferSinger` TEXT, `favoriteSong` TEXT, PRIMARY KEY (`userId`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -120,6 +120,7 @@ class _$UserDao extends UserDao {
             'MdlLocalStore',
             (MdlLocalStore item) => <String, Object?>{
                   'userId': item.userId,
+                  'preferSinger': item.preferSinger,
                   'favoriteSong': item.favoriteSong
                 },
             changeListener),
@@ -129,6 +130,7 @@ class _$UserDao extends UserDao {
             ['userId'],
             (MdlLocalStore item) => <String, Object?>{
                   'userId': item.userId,
+                  'preferSinger': item.preferSinger,
                   'favoriteSong': item.favoriteSong
                 },
             changeListener);
@@ -148,7 +150,8 @@ class _$UserDao extends UserDao {
     return _queryAdapter.queryList('SELECT * FROM MdlLocalStore',
         mapper: (Map<String, Object?> row) => MdlLocalStore(
             userId: row['userId'] as int?,
-            favoriteSong: row['favoriteSong'] as String?));
+            favoriteSong: row['favoriteSong'] as String?,
+            preferSinger: row['preferSinger'] as String?));
   }
 
   @override
@@ -156,7 +159,8 @@ class _$UserDao extends UserDao {
     return _queryAdapter.queryStream('SELECT * FROM Person WHERE id = ?1',
         mapper: (Map<String, Object?> row) => MdlLocalStore(
             userId: row['userId'] as int?,
-            favoriteSong: row['favoriteSong'] as String?),
+            favoriteSong: row['favoriteSong'] as String?,
+            preferSinger: row['preferSinger'] as String?),
         arguments: [id],
         queryableName: 'Person',
         isView: false);

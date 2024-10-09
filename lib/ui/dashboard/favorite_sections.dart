@@ -76,13 +76,17 @@ class _FavoriteSectionsState extends State<FavoriteSections> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 300.h,
+            Container(
+              constraints: BoxConstraints(
+                maxHeight: 330.w,
+                minHeight: 150.w,
+              ),
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: songSections.length,
                 itemBuilder: (context, sectionIndex) {
                   return Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       for (var song in songSections[sectionIndex])
                         SizedBox(

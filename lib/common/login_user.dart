@@ -26,6 +26,9 @@ class LoginUser {
   BehaviorSubject<bool> didUpdateLanguageData = BehaviorSubject<bool>();
   BehaviorSubject<bool> songPlay = BehaviorSubject<bool>();
   BehaviorSubject<bool> updateFavorites = BehaviorSubject<bool>();
+  BehaviorSubject<bool> updateRecommended = BehaviorSubject<bool>();
+  BehaviorSubject<bool> playNext = BehaviorSubject<bool>();
+  BehaviorSubject<bool> playPrevious = BehaviorSubject<bool>();
   BehaviorSubject<LoopMode> playInLoop =
       BehaviorSubject<LoopMode>.seeded(LoopMode.off);
   BehaviorSubject<MDlPlayingSongs> playingSong =
@@ -33,6 +36,8 @@ class LoginUser {
   BehaviorSubject<Songs> currentPlayingSong = BehaviorSubject<Songs>();
   List<Songs> favoriteSong = [];
   List<Singers> preferSinger = [];
+
+  Songs currentSong = Songs();
 
   String? currentPlayAlbumId;
   AudioPlayer player = AudioPlayer();

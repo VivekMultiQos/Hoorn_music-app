@@ -6,6 +6,7 @@ class AppPages {
 
   ///LRF
   static const loginPage = '/LoginPage';
+  static const welcomeScreen = '/welcomeScreen';
   static const dashboard = '/dashboard';
   static const albumDetails = '/albumDetails';
   static const playScreen = '/playScreen';

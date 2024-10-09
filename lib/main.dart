@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:music_app/app.dart';
 import 'package:music_app/common/login_user.dart';
+import 'package:music_app/constant/app_assets.dart';
 import 'package:music_app/constant/app_logs.dart';
 import 'package:music_app/services/user_service.dart';
 
@@ -11,7 +14,6 @@ import 'package:music_app/services/user_service.dart';
 void main() {
   return runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
-
     /// To Set the fix device orientation.
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 

@@ -1,5 +1,4 @@
 import 'package:floor/floor.dart';
-import 'package:music_app/entities/albums/mdl_album_details.dart';
 
 @entity
 class MdlLocalStore {
@@ -8,11 +7,11 @@ class MdlLocalStore {
   String? preferSinger;
   String? favoriteSong;
 
-  MdlLocalStore({this.userId, this.favoriteSong,this.preferSinger});
+  MdlLocalStore({this.userId, this.favoriteSong, this.preferSinger});
 
   MdlLocalStore.fromJson(Map<String, dynamic> json) {
-    userId = json['userId'];
-    favoriteSong = json['favoriteSong'];
-    preferSinger = json['preferSinger'];
+    userId = json['userId'] ?? 1;
+    favoriteSong = json['favoriteSong'] ?? '';
+    preferSinger = json['preferSinger'] ?? '';
   }
 }

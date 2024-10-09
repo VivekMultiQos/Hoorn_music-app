@@ -33,7 +33,7 @@ class _SongListState extends State<SongList> {
   Widget build(BuildContext context) {
     if (widget.singles ?? false) {
       return SizedBox(
-        height: 200.h,
+        height: 220.w,
         child: ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,

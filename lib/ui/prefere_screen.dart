@@ -8,7 +8,6 @@ import 'package:music_app/constant/app_assets.dart';
 import 'package:music_app/constant/font_style.dart';
 import 'package:music_app/constant/import.dart';
 
-import '../constant/app_assets.dart';
 import '../entities/albums/mdl_local_store.dart';
 
 class Singers {
@@ -17,7 +16,6 @@ class Singers {
 
   Singers({required this.name, required this.image});
 
-  // Convert a Singers object into a JSON map
   Map<String, dynamic> toJson() {
     return {
       'name': name,
@@ -134,42 +132,49 @@ class _PreferScreenState extends State<PreferScreen> {
           ),
         ),
         bottomNavigationBar: Container(
+          padding: EdgeInsets.symmetric(horizontal: 15.w,vertical: 15.w),
           decoration: BoxDecoration(
             gradient: screenBackGroundColor(),
           ),
           child: InkWell(
             onTap: () async {
               if (selectedSingers.isNotEmpty) {
-                Get.toNamed(AppPages.dashboard);
+                Get.offAllNamed(AppPages.dashboard);
                 LoginUser.instance.preferSinger = selectedSingers;
-                await LoginUser.instance.storeUserDataToLocal(
-                  MdlLocalStore(
-                    favoriteSong: jsonEncode(selectedSingers
-                        .map((singer) => singer.toJson())
-                        .toList()),
-                  ),
-                );
+                try {
+                  await LoginUser.instance.storeUserDataToLocal(
+                    MdlLocalStore(
+                      favoriteSong: jsonEncode(LoginUser.instance.favoriteSong
+                          .map((song) => song.toJson())
+                          .toList()),
+                      userId: 1,
+                      preferSinger: jsonEncode(LoginUser.instance.preferSinger
+                          .map((singer) => singer.toJson())
+                          .toList()),
+                    ),
+                  );
+                } catch (e) {
+                  print(e);
+                }
               } else {
                 showToastAlert(message: "Please selected a one singer!");
               }
             },
             child: Container(
-              margin: EdgeInsets.all(10.w),
+              width: double.infinity,
+              height: 60.w,
+              padding: EdgeInsets.all(15.w),
               decoration: BoxDecoration(
-                color: Colors.black38,
-                border: Border.all(color: Colors.white),
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              height: 50.h,
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(50.r),
+                  border: Border.all()),
               child: Center(
                 child: Text(
                   "Done",
-                  style: AppFontStyle.h2SemiBold.copyWith(
-                    color: Colors.white,
-                  ),
+                  style: AppFontStyle.h2SemiBold,
                 ),
               ),
-            ),
+            )
           ),
         ),
       ),

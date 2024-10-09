@@ -16,6 +16,7 @@ import 'package:music_app/ui/dashboard/playlist/playlist_details.dart';
 import 'package:music_app/ui/dashboard/search.dart';
 import 'package:music_app/ui/lrf/login_page.dart';
 import 'package:music_app/ui/prefere_screen.dart';
+import 'package:music_app/ui/welcome_screen.dart';
 
 import '../repository/contract_builder/app_repository_builder.dart';
 
@@ -28,6 +29,10 @@ class MainAppPages {
     GetPage(
       name: AppPages.loginPage,
       page: () => const LoginPage(),
+    ),
+    GetPage(
+      name: AppPages.welcomeScreen,
+      page: () => const WelcomeScreen(),
     ),
     GetPage(
       name: AppPages.dashboard,
