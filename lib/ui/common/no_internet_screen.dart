@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:music_app/constant/import.dart';
-
 
 class NoInternetScreen extends StatefulWidget {
   const NoInternetScreen({Key? key}) : super(key: key);
@@ -17,37 +17,31 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
       bloc: changeThemeCubit,
       builder: (context, themeState) {
         return Scaffold(
-            backgroundColor: themeState.customColors[AppColors.white],
-            body: Column(
+          backgroundColor: themeState.customColors[AppColors.white],
+          body: SizedBox(
+            width: Get.width,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                /*SizedBox(
-                    height: 350.h,
-                    child: SvgPicture.asset(AssetImages.icNoInternet)),*/
-                // Padding(
-                //   padding:
-                //       EdgeInsets.symmetric(horizontal: 28.w, vertical: 15.h),
-                //   child: Text(
-                //     localize(context, LanguageKey.noInternetConnection),
-                //     style: AppFontStyle.h1Guau25.copyWith(
-                //         color: themeState.customColors[AppColors.black]),
-                //   ),
-                // ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 35.w,
+                SizedBox(
+                  child: SvgPicture.asset(
+                    AssetImages.icNoInternet,
                   ),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 28.w, vertical: 15.h),
                   child: Text(
                     "No internet",
-                    textAlign: TextAlign.center,
-                    maxLines: 3,
-                    style: AppFontStyle.h3SemiBold.copyWith(
+                    style: AppFontStyle.h2SemiBold.copyWith(
                         color: themeState.customColors[AppColors.black]),
                   ),
                 ),
               ],
             ),
-          );
+          ),
+        );
       },
     );
   }

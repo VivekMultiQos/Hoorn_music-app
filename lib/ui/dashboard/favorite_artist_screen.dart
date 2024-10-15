@@ -4,62 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:music_app/common/login_user.dart';
 import 'package:music_app/common/util.dart';
 import 'package:music_app/constant/import.dart';
+import 'package:music_app/entities/albums/mdl_local_store.dart';
+import 'package:music_app/ui/prefere_screen.dart';
 
-import '../entities/albums/mdl_local_store.dart';
-
-class Singers {
-  String name;
-  String image;
-  bool? url;
-
-  Singers({required this.name, required this.image, this.url});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'image': image,
-      'url': url,
-    };
-  }
-
-  // Create a Singers object from a JSON map
-  factory Singers.fromJson(Map<String, dynamic> json) {
-    return Singers(
-      name: json['name'],
-      image: json['image'],
-      url: json['url'] ?? false,
-    );
-  }
-}
-
-class PreferScreen extends StatefulWidget {
-  const PreferScreen({super.key});
+class FavoriteArtist extends StatefulWidget {
+  const FavoriteArtist({super.key});
 
   @override
-  State<PreferScreen> createState() => _PreferScreenState();
+  State<FavoriteArtist> createState() => _FavoriteArtistState();
 }
 
-class _PreferScreenState extends State<PreferScreen> {
-  List<Singers> singers = [
-    Singers(name: "Christina Perri", image: AssetImages.christinaPerri),
-    Singers(name: "Taylor Swift", image: AssetImages.taylorSwift),
-    Singers(name: "Miley Cyrus", image: AssetImages.mileyCyrus),
-    Singers(name: "Bruno Mars", image: AssetImages.brunoMars),
-    Singers(name: "Selena Gomez", image: AssetImages.selenaGomez),
-    Singers(name: "Justin Bieber", image: AssetImages.justinBieber),
-    Singers(name: "Eminem", image: AssetImages.eminem),
-    Singers(name: "Justin Timberlake", image: AssetImages.justinTimberlake),
-    Singers(name: "Rihanna", image: AssetImages.rihanna),
-  ];
+class _FavoriteArtistState extends State<FavoriteArtist> {
+  List<Singers> singers = [];
 
-  List<Singers> selectedSingers = [];
+  List<Singers> selectedSinger = [];
+
+  @override
+  void initState() {
+    singers = LoginUser.instance.preferSinger;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
-        appBar: baseAppBar(),
+        appBar: baseAppBar(leading: BackButton(), title: "My favorite artist"),
         body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 15.w),
           decoration: BoxDecoration(
             gradient: screenBackGroundColor(),
           ),
@@ -75,10 +47,15 @@ class _PreferScreenState extends State<PreferScreen> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  if (selectedSingers.contains(singers[index])) {
-                    selectedSingers.remove(singers[index]);
+                  if (selectedSinger.contains(singers[index])) {
+                    selectedSinger.remove(singers[index]);
                   } else {
-                    selectedSingers.add(singers[index]);
+                    if (selectedSinger.length < singers.length - 2) {
+                      selectedSinger.add(singers[index]);
+                    } else {
+                      showToastAlert(
+                          message: "Minimum tow singers are required");
+                    }
                   }
                   setState(() {});
                 },
@@ -86,19 +63,8 @@ class _PreferScreenState extends State<PreferScreen> {
                   children: [
                     Stack(
                       children: [
-                        Container(
-                          height: 150.w,
-                          width: 150.w,
-                          clipBehavior: Clip.hardEdge,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          child: Image.asset(
-                            singers[index].image,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        selectedSingers.contains(singers[index])
+                        image(index: index),
+                        selectedSinger.contains(singers[index])
                             ? Container(
                                 height: 150.w,
                                 width: 150.w,
@@ -132,15 +98,22 @@ class _PreferScreenState extends State<PreferScreen> {
           ),
         ),
         bottomNavigationBar: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.w),
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.w)
+              .copyWith(
+                  bottom:
+                      LoginUser.instance.currentSong.name?.isNotEmpty ?? false
+                          ? 100.h
+                          : 15.h),
           decoration: BoxDecoration(
             gradient: screenBackGroundColor(),
           ),
           child: InkWell(
               onTap: () async {
-                if (selectedSingers.isNotEmpty) {
-                  Get.offAllNamed(AppPages.dashboard);
-                  LoginUser.instance.preferSinger = selectedSingers;
+                if (selectedSinger.isNotEmpty) {
+                  for (var singer in selectedSinger) {
+                    LoginUser.instance.preferSinger.removeWhere(
+                        (preferSinger) => preferSinger.name == singer.name);
+                  }
                   try {
                     await LoginUser.instance.storeUserDataToLocal(
                       MdlLocalStore(
@@ -157,8 +130,9 @@ class _PreferScreenState extends State<PreferScreen> {
                     print(e);
                   }
                 } else {
-                  showToastAlert(message: "Please selected a one singer!");
+                  showToastAlert(message: "Please select at least one singer!");
                 }
+                setState(() {});
               },
               child: Container(
                 width: double.infinity,
@@ -170,7 +144,7 @@ class _PreferScreenState extends State<PreferScreen> {
                     border: Border.all()),
                 child: Center(
                   child: Text(
-                    "Done",
+                    "Remove",
                     style: AppFontStyle.h2SemiBold,
                   ),
                 ),
@@ -178,5 +152,35 @@ class _PreferScreenState extends State<PreferScreen> {
         ),
       ),
     );
+  }
+
+  Widget image({required int index}) {
+    if (singers[index].url == false) {
+      return Container(
+        height: 150.w,
+        width: 150.w,
+        clipBehavior: Clip.hardEdge,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        child: Image.asset(
+          singers[index].image,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      return Container(
+        height: 150.w,
+        width: 150.w,
+        clipBehavior: Clip.hardEdge,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        child: Image.network(
+          singers[index].image,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
   }
 }

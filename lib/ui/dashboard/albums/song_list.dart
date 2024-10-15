@@ -98,9 +98,15 @@ class _SongListState extends State<SongList> {
             children: [
               CachedNetworkImage(
                 imageUrl: image,
-                height: 150.w,
+                fit: BoxFit.cover,
                 width: 150.w,
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+                height: 155.w,
+                errorWidget: (context, url, error) => Image.network(
+                  'https://www.wagbet.com/wp-content/uploads/2019/11/music_placeholder.png',
+                  fit: BoxFit.cover,
+                  width: 150.w,
+                  height: 155.w,
+                ),
               ),
               if (playingSongId == songId)
                 SizedBox(

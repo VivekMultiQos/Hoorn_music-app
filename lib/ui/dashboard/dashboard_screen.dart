@@ -103,6 +103,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     SizedBox(
+                      width: 10.w,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed(AppPages.favoriteArtist);
+                      },
+                      child: Icon(
+                        Icons.people_alt_outlined,
+                        color: Colors.black,
+                        size: 30.w,
+                      ),
+                    ),
+                    SizedBox(
                       width: 15.w,
                     )
                   ],

@@ -15,4 +15,5 @@ class AppPages {
   static const artistDetails = '/artistDetails';
   static const prefetchPage = '/prefetchPage';
   static const preferScreen = '/preferScreen';
+  static const favoriteArtist = '/favoriteArtist';
 }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/constant/import.dart';
 import 'package:music_app/entities/albums/mdl_album_details_screen.dart';
@@ -50,8 +51,15 @@ class _AlbumListState extends State<AlbumList> {
                   },
                   child: Column(
                     children: [
-                      Image.network(
-                        widget.albumList[index].image?[1].url ?? '',
+                      CachedNetworkImage(
+                        imageUrl: widget.albumList[index].image?[1].url ?? '',
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => Image.network(
+                          'https://www.wagbet.com/wp-content/uploads/2019/11/music_placeholder.png',
+                          fit: BoxFit.cover,
+                          width: 150.w,
+                          height: 155.w,
+                        ),
                       ),
                       SizedBox(
                         width: 150.w,

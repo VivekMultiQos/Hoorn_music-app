@@ -26,6 +26,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     requestPermission();
+    _configureInternetConnectivity();
     super.initState();
   }
 
@@ -106,25 +107,37 @@ class _AppState extends State<App> {
     }
   }
 
-  void _showNoInternetAlert(ConnectivityResult result) {
-    if (result == ConnectivityResult.none && !_hasVisibleNoInternet) {
-      _hasVisibleNoInternet = true;
-      Get.generalDialog(
-        barrierDismissible: false,
-        barrierLabel: 'barrierLabel',
-        barrierColor: Colors.black45,
-        transitionDuration: const Duration(milliseconds: 0),
-        pageBuilder: (BuildContext buildContext, Animation animation,
-            Animation secondaryAnimation) {
-          return const WillPopScope(
-            onWillPop: performWillPopTwoClick,
-            child: NoInternetScreen(),
+  Future<void> _showNoInternetAlert(ConnectivityResult result) async {
+    if (result == ConnectivityResult.none) {
+      try {
+        Future.delayed(const Duration(milliseconds: 0)).then((value) {
+          _hasVisibleNoInternet = false;
+          if (Get.isDialogOpen!) {
+            return;
+          }
+          Get.generalDialog(
+            barrierDismissible: false,
+            barrierLabel: 'barrierLabel',
+            barrierColor: Colors.black45,
+            transitionDuration: const Duration(milliseconds: 0),
+            pageBuilder: (BuildContext buildContext, Animation animation,
+                Animation secondaryAnimation) {
+              return const WillPopScope(
+                onWillPop: performWillPopTwoClick,
+                child: NoInternetScreen(),
+              );
+            },
           );
-        },
-      );
-    } else if (_hasVisibleNoInternet) {
-      Get.back();
-      _hasVisibleNoInternet = false;
+        });
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      Future.delayed(const Duration(milliseconds: 0)).then((value) async {
+        if (!_hasVisibleNoInternet) {
+          Get.back();
+        }
+      });
     }
   }
 

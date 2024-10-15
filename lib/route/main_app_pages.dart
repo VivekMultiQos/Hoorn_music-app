@@ -11,6 +11,7 @@ import 'package:music_app/prefetch/prefetch_page.dart';
 import 'package:music_app/ui/dashboard/albums/album_details_screen.dart';
 import 'package:music_app/ui/dashboard/artist/artist_details_screen.dart';
 import 'package:music_app/ui/dashboard/dashboard_screen.dart';
+import 'package:music_app/ui/dashboard/favorite_artist_screen.dart';
 import 'package:music_app/ui/dashboard/play_screen.dart';
 import 'package:music_app/ui/dashboard/playlist/playlist_details.dart';
 import 'package:music_app/ui/dashboard/search.dart';
@@ -33,6 +34,10 @@ class MainAppPages {
     GetPage(
       name: AppPages.welcomeScreen,
       page: () => const WelcomeScreen(),
+    ),
+    GetPage(
+      name: AppPages.favoriteArtist,
+      page: () => const FavoriteArtist(),
     ),
     GetPage(
       name: AppPages.dashboard,

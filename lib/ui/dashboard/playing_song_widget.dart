@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:music_app/common/login_user.dart';
 import 'package:music_app/common/util.dart';
 import 'package:music_app/constant/import.dart';
@@ -54,7 +52,8 @@ class _PlayingSongWidgetState extends State<PlayingSongWidget> {
     LoginUser.instance.playingSong.listen((value) {
       _allSong = value.songs;
       _currentPlay = value.currentPlayingIndex;
-      widget.playingSongCubit.updateSong(song: value.songs[value.currentPlayingIndex]);
+      widget.playingSongCubit
+          .updateSong(song: value.songs[value.currentPlayingIndex]);
     });
 
     LoginUser.instance.playInLoop.listen((value) {
@@ -68,15 +67,15 @@ class _PlayingSongWidgetState extends State<PlayingSongWidget> {
   }
 
   Future<void> playBackground() async {
-      _audioHandler = await AudioService.init(
-        builder: () => AudioPlayerHandler(),
-        config: const AudioServiceConfig(
-          androidNotificationChannelId: 'com.example.music_app',
-          androidNotificationChannelName: 'Audio playback',
-          androidNotificationOngoing: true,
-          androidStopForegroundOnPause: true,
-        ),
-      );
+    _audioHandler = await AudioService.init(
+      builder: () => AudioPlayerHandler(),
+      config: const AudioServiceConfig(
+        androidNotificationChannelId: 'com.example.music_app',
+        androidNotificationChannelName: 'Audio playback',
+        androidNotificationOngoing: true,
+        androidStopForegroundOnPause: true,
+      ),
+    );
   }
 
   Future<void> _init() async {
@@ -156,7 +155,8 @@ class _PlayingSongWidgetState extends State<PlayingSongWidget> {
               }
             },
             builder: (context, state) {
-              if (state is PlayingSongSuccessState || LoginUser.instance.player.playing) {
+              if (state is PlayingSongSuccessState ||
+                  LoginUser.instance.player.playing) {
                 return StreamBuilder<bool>(
                   stream: _isPlayingStream,
                   builder: (context, snapshot) {
@@ -222,8 +222,13 @@ class _PlayingSongWidgetState extends State<PlayingSongWidget> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10.r),
                                     ),
-                                    child: Image.network(
-                                        _currentSong.image?[0].url ?? ''),
+                                    child: CachedNetworkImage(
+                                      imageUrl: _currentSong.image?[0].url ?? '',
+                                      width: 50.w,
+                                      height: 50.w,
+                                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                   SizedBox(
                                     width: 10.w,
