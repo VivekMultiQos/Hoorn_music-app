@@ -151,7 +151,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                                   // Pass your lyrics string with <br> tags
                                                   style: {
                                                     "body": Style(
-                                                      fontSize: FontSize(16.0),
+                                                      fontSize:
+                                                          FontSize(16.0),
                                                       color: Colors.black,
                                                       textAlign:
                                                           TextAlign.center,
@@ -168,7 +169,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                   child: Container(
                                     clipBehavior: Clip.hardEdge,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20.r),
+                                      borderRadius:
+                                          BorderRadius.circular(20.r),
                                       boxShadow: const [
                                         BoxShadow(
                                           color: Colors.black38,
@@ -177,7 +179,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                       ],
                                     ),
                                     child: CachedNetworkImage(
-                                      imageUrl: currentSong.image?.isNotEmpty ??
+                                      imageUrl: currentSong
+                                                  .image?.isNotEmpty ??
                                               false
                                           ? currentSong.image?.last.url ?? ''
                                           : '',
@@ -197,7 +200,8 @@ class _PlayScreenState extends State<PlayScreen> {
                           mode: TextScrollMode.endless,
                         ),
                         TextScroll(
-                          currentSong.artists?.primary?.first.name ?? 'artist',
+                          currentSong.artists?.primary?.first.name ??
+                              'artist',
                           style: AppFontStyle.h3Regular,
                           mode: TextScrollMode.endless,
                         ),
@@ -207,9 +211,11 @@ class _PlayScreenState extends State<PlayScreen> {
                         Column(
                           children: [
                             StreamBuilder<Duration>(
-                              stream: LoginUser.instance.player.positionStream,
+                              stream:
+                                  LoginUser.instance.player.positionStream,
                               builder: (context, snapshot) {
-                                final position = snapshot.data ?? Duration.zero;
+                                final position =
+                                    snapshot.data ?? Duration.zero;
                                 final totalDuration =
                                     LoginUser.instance.player.duration ??
                                         Duration.zero;
